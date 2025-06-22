@@ -133,10 +133,7 @@ MVC_Project/
 ## Como Executar o Projeto
 
 1. Certifique-se de ter o .NET 8.0 SDK instalado
-2. Navegue até a pasta do projeto:
-   ```bash
-   cd C:\Users\willi\RiderProjects\MVC_Project
-   ```
+2. Navegue até a pasta do projeto
 3. Execute o projeto:
    ```bash
    dotnet run --project MVC_Project
