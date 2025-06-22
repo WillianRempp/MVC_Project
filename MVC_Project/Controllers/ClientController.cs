@@ -14,8 +14,8 @@ public class ClientController(ClientService service) : ControllerBase
     [HttpGet("{id:int}")]
     public ActionResult<Client> GetById(int id)
     {
-        var cliente = service.GetById(id);
-        return cliente == null ? NotFound() : Ok(cliente);
+        var client = service.GetById(id);
+        return client == null ? NotFound() : Ok(client);
     }
 
     [HttpGet("name/{name}")]
@@ -34,6 +34,9 @@ public class ClientController(ClientService service) : ControllerBase
         var updated = service.Update(id, client);
         return updated == null ? NotFound() : Ok(updated);
     }
+
+    [HttpGet("count")]
+    public ActionResult<int> Count() => Ok(service.Count());
 
     [HttpDelete("{id:int}")]
     public IActionResult Delete(int id)

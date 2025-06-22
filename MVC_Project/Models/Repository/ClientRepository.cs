@@ -33,4 +33,6 @@ public class ClientRepository : IClientRepository
         var client = GetById(id);
         return client != null && _clients.Remove(client);
     }
+
+    public int Count() => _clients.Count;
 }

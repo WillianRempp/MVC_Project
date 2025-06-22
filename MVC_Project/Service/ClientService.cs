@@ -18,4 +18,5 @@ public class ClientService
     public Client Create(Client client) => _repository.Create(client);
     public Client? Update(int id, Client client) => _repository.Update(id, client);
     public bool Delete(int id) => _repository.Delete(id);
+    public int Count() => _repository.Count();
 }

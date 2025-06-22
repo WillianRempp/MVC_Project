@@ -8,4 +8,5 @@ public interface IClientRepository
     Client.Client Create(Client.Client client);
     Client.Client? Update(int id, Client.Client client);
     bool Delete(int id);
+    int Count();
 }
