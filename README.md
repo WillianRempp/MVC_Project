@@ -1,67 +1,149 @@
-# MVC Project - API de Gerenciamento de Clientes
+# Projeto Acadêmico - Sistema de Gerenciamento de Clientes
 
-## 📋 Visão Geral
-API RESTful desenvolvida em .NET 8 seguindo o padrão de arquitetura MVC (Model-View-Controller). Esta aplicação fornece operações CRUD básicas para gerenciamento de clientes, utilizando um repositório em memória.
+## 1. Arquitetura do Software
 
-## 🏗️ Estrutura do Projeto
+### Diagrama de Arquitetura (C4 Model - Nível 1: Contexto)
+```mermaid
+graph TD
+    A[Usuário] -->|Consulta/Atualiza| B[Aplicação Web MVC]
+    B -->|Gerencia| C[Clientes]
+    B -->|Utiliza| D[Serviços de Negócio]
+    D -->|Acessa| E[Repositório de Dados]
+    E -->|Armazena/Recupera| F[(Banco de Dados em Memória)]
+```
+
+### Diagrama de Componentes
+```mermaid
+graph LR
+    A[ClientController] -->|Usa| B[ClientService]
+    B -->|Implementa| C[IClientRepository]
+    C <|.. D[ClientRepository]
+    D -->|Manipula| E[Client Model]
+```
+
+## 2. Estrutura de Pastas do Projeto MVC
 
 ```
 MVC_Project/
-├── Controllers/
-│   └── ClientController.cs      # Controlador de clientes
-├── Models/
-│   ├── Client/
-│   │   └── Client.cs           # Modelo de cliente
-│   └── Repository/
-│       ├── IClientRepository.cs # Interface do repositório
+├── Controllers/               # Controladores da aplicação
+│   └── ClientController.cs     # Controlador para gerenciar clientes
+├── Models/                     # Modelos e lógica de negócios
+│   ├── Client/                 
+│   │   └── Client.cs          # Modelo de domínio Cliente
+│   └── Repository/             # Camada de acesso a dados
+│       ├── IClientRepository.cs # Contrato do repositório
 │       └── ClientRepository.cs  # Implementação do repositório (memória)
-├── Service/
-│   └── ClientService.cs        # Camada de serviço
-├── Properties/
-├── Program.cs                   # Configuração da aplicação
-└── appsettings.json             # Configurações
+├── Service/                   # Camada de serviços
+│   └── ClientService.cs        # Lógica de negócios para clientes
+├── Properties/                 # Configurações do projeto
+├── Program.cs                  # Ponto de entrada da aplicação
+└── appsettings.json            # Configurações da aplicação
 ```
 
-## 🚀 Como Executar
+## 3. Explicação da Estrutura e Elementos
 
-### Pré-requisitos
-- .NET 8.0 SDK
+### 3.1 Camada de Apresentação (Controllers)
+- **ClientController.cs**: Responsável por:
+  - Receber requisições HTTP
+  - Validar dados de entrada
+  - Orquestrar chamadas à camada de serviço
+  - Retornar respostas HTTP apropriadas
 
-### Passos
+### 3.2 Camada de Domínio (Models)
+- **Client.cs**:
+  ```csharp
+  public class Client
+  {
+      public int Id { get; set; }
+      [Required] public string Name { get; set; } = string.Empty;
+      [EmailAddress] public string Email { get; set; } = string.Empty;
+  }
+  ```
+  - Define a entidade Cliente com suas propriedades e validações
 
-1. Execute a aplicação:
+### 3.3 Camada de Serviço
+- **ClientService.cs**:
+  - Implementa a lógica de negócios
+  - Coordena operações entre o controlador e o repositório
+  - Pode conter regras de negócio mais complexas
+
+### 3.4 Camada de Acesso a Dados (Repository)
+- **IClientRepository.cs**:
+  ```csharp
+  public interface IClientRepository
+  {
+      IEnumerable<Client> GetAll();
+      Client? GetById(int id);
+      IEnumerable<Client> GetByName(string name);
+      Client Create(Client client);
+      Client? Update(int id, Client client);
+      bool Delete(int id);
+      int Count();
+  }
+  ```
+  - Define o contrato para operações de persistência
+
+- **ClientRepository.cs**:
+  - Implementa o repositório em memória
+  - Gerencia o ciclo de vida dos dados
+  - Simula operações de banco de dados
+
+## Como Executar o Projeto
+
+1. Certifique-se de ter o .NET 8.0 SDK instalado
+2. Navegue até a pasta do projeto:
+   ```bash
+   cd C:\Users\willi\RiderProjects\MVC_Project
+   ```
+3. Execute o projeto:
    ```bash
    dotnet run --project MVC_Project
    ```
-
-2. Acesse o swagger:
+4. Acesse a documentação da API em:
    ```
    https://localhost:5000/swagger/index.html
    ```
 
-## 📚 Endpoints da API
+## Endpoints da API
 
 | Método | Endpoint | Descrição |
 |--------|----------|------------|
-| GET    | /api/Client | Listar todos os clientes |
+| GET    | /api/Client | Listar clientes |
 | GET    | /api/Client/{id} | Obter cliente por ID |
-| GET    | /api/Client/name/{name} | Buscar clientes por nome |
 | POST   | /api/Client | Criar novo cliente |
-| PUT    | /api/Client/{id} | Atualizar cliente existente |
+| PUT    | /api/Client/{id} | Atualizar cliente |
 | DELETE | /api/Client/{id} | Excluir cliente |
-| GET    | /api/Client/count | Contar total de clientes |
+| GET    | /api/Client/count | Total de clientes |
 
-### Exemplo de JSON para criar/atualizar cliente:
+### Exemplo de Requisição (POST /api/Client)
 ```json
 {
-  "name": "Nome do Cliente",
-  "email": "cliente@exemplo.com"
+  "name": "João Silva",
+  "email": "joao@email.com"
 }
 ```
 
-## 🛠️ Tecnologias e Padrões
-- **.NET 8.0**
-- **MVC Architecture**
-- **Repository Pattern**
-- **Dependency Injection**
-- **Swagger/OpenAPI**
+## Padrões de Projeto Utilizados
+
+1. **MVC (Model-View-Controller)**
+   - Separação clara entre apresentação, lógica e dados
+
+2. **Repository Pattern**
+   - Abstrai a camada de acesso a dados
+   - Facilita a troca da implementação de persistência
+
+3. **Dependency Injection**
+   - Inversão de controle para melhor testabilidade
+   - Configurado em Program.cs
+
+4. **Injeção de Dependência**
+   - Serviços são injetados via construtor
+   - Promove baixo acoplamento
+
+## Considerações Finais
+
+Este projeto demonstra uma implementação básica mas completa de uma API RESTful seguindo os princípios do MVC. A arquitetura foi projetada para ser:
+- **Modular**: Cada componente tem uma responsabilidade única
+- **Testável**: Injeção de dependência facilita testes unitários
+- **Extensível**: Fácil adicionar novos recursos
+- **Manutenível**: Código organizado e documentado
