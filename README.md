@@ -14,11 +14,53 @@ graph TD
 
 ### Diagrama de Componentes
 ```mermaid
-graph LR
-    A[ClientController] -->|Usa| B[ClientService]
-    B -->|Implementa| C[IClientRepository]
-    C <|.. D[ClientRepository]
-    D -->|Manipula| E[Client Model]
+classDiagram
+    class ClientController{
+        +ClientService _service
+        +GetAll()
+        +GetById(id)
+        +Create(client)
+        +Update(id, client)
+        +Delete(id)
+    }
+    
+    class ClientService{
+        +IClientRepository _repository
+        +GetAll()
+        +GetById(id)
+        +Create(client)
+        +Update(id, client)
+        +Delete(id)
+    }
+    
+    class IClientRepository{
+        <<interface>>
+        +GetAll()
+        +GetById(id)
+        +Create(client)
+        +Update(id, client)
+        +Delete(id)
+    }
+    
+    class ClientRepository{
+        -List~Client~ _clients
+        +GetAll()
+        +GetById(id)
+        +Create(client)
+        +Update(id, client)
+        +Delete(id)
+    }
+    
+    class Client{
+        +int Id
+        +string Name
+        +string Email
+    }
+    
+    ClientController --> ClientService
+    ClientService --> IClientRepository
+    IClientRepository <|.. ClientRepository
+    ClientRepository --> Client
 ```
 
 ## 2. Estrutura de Pastas do Projeto MVC
